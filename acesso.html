@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificação de Região</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: url('https://img.freepik.com/fotos-gratis/alface-closeup-textura-de-fundo_144627-30014.jpg?t=st=1721313944~exp=1721317544~hmac=d142e050e3c6e64163a3b85b21554b87b56a6541dd9cffc32e18baa36ec93acb&w=1380') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            background: rgba(0, 51, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            color: white;
+        }
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: none;
+            background-color: #28a745;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .message {
+            margin-top: 20px;
+            color: #f8d7da;
+            background-color: #721c24;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Verificação de Região</h1>
+        <p>Por favor, insira o seu CEP:</p>
+        <input type="text" id="cep" placeholder="CEP">
+        <button onclick="verificarCEP()">Verificar</button>
+        <p class="message" id="message">Não atendemos na sua região.</p>
+    </div>
+
+    <script>
+        async function verificarCEP() {
+            var cep = document.getElementById("cep").value.replace("-", "");
+            var mensagem = document.getElementById("message");
+
+            if (!cep.match(/^\d{8}$/)) {
+                mensagem.textContent = "Por favor, insira um CEP válido.";
+                mensagem.style.display = "block";
+                return;
+            }
+
+            try {
+                var response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+                var data = await response.json();
+
+                if (data.erro) {
+                    mensagem.textContent = "CEP não encontrado.";
+                    mensagem.style.display = "block";
+                } else if (data.localidade === "Mogi das Cruzes") {
+                    window.location.href = "https://pede-alface.kyte.site"; // Redireciona para a HomePage
+                } else {
+                    mensagem.textContent = "Não atendemos na sua região.";
+                    mensagem.style.display = "block";
+                }
+            } catch (error) {
+                mensagem.textContent = "Erro ao verificar o CEP. Tente novamente mais tarde.";
+                mensagem.style.display = "block";
+            }
+        }
+    </script>
+</body>
+</html>
